@@ -33,68 +33,63 @@ public partial class HospitalContext : DbContext
     {
         modelBuilder.Entity<Cabinet>(entity =>
         {
-            entity.HasKey(e => e.Number).HasName("PK__Cabinets__78A1A19CFB1A0891");
+            entity.HasKey(e => e.Id).HasName("PK__Cabinets__3214EC276110F828");
 
-            entity.Property(e => e.Number).ValueGeneratedNever();
+            entity.Property(e => e.Id).HasColumnName("ID");
         });
 
         modelBuilder.Entity<District>(entity =>
         {
-            entity.HasKey(e => e.Number).HasName("PK__District__78A1A19C3DDF1D75");
+            entity.HasKey(e => e.Id).HasName("PK__District__3214EC27AC5682AC");
 
-            entity.ToTable("District");
-
-            entity.Property(e => e.Number).ValueGeneratedNever();
+            entity.Property(e => e.Id).HasColumnName("ID");
         });
 
         modelBuilder.Entity<Doctor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Doctors__3214EC273D471EE0");
+            entity.HasKey(e => e.Id).HasName("PK__Doctors__3214EC270A671B5F");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.FullName).HasMaxLength(100);
-            entity.Property(e => e.Specialization).HasMaxLength(100);
 
             entity.HasOne(d => d.CabinetNavigation).WithMany(p => p.Doctors)
                 .HasForeignKey(d => d.Cabinet)
-                .HasConstraintName("FK__Doctors__Cabinet__4CA06362");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Doctors__Cabinet__403A8C7D");
 
             entity.HasOne(d => d.DistrictNavigation).WithMany(p => p.Doctors)
                 .HasForeignKey(d => d.District)
-                .HasConstraintName("FK__Doctors__Distric__4E88ABD4");
+                .HasConstraintName("FK__Doctors__Distric__4222D4EF");
 
             entity.HasOne(d => d.SpecializationNavigation).WithMany(p => p.Doctors)
                 .HasForeignKey(d => d.Specialization)
-                .HasConstraintName("FK__Doctors__Special__4D94879B");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Doctors__Special__412EB0B6");
         });
 
         modelBuilder.Entity<Patient>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Patients__3214EC27A9D32C4C");
+            entity.HasKey(e => e.Id).HasName("PK__Patients__3214EC27F38B4A7B");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("ID");
-            entity.Property(e => e.Adress).HasMaxLength(200);
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.DateOfBirth).HasColumnType("date");
-            entity.Property(e => e.MiddleName).HasMaxLength(50);
-            entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.Sex).HasMaxLength(1);
-            entity.Property(e => e.Surname).HasMaxLength(50);
+            entity.Property(e => e.MiddleName).HasMaxLength(100);
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Sex).HasMaxLength(10);
+            entity.Property(e => e.Surname).HasMaxLength(100);
 
             entity.HasOne(d => d.DistrictNavigation).WithMany(p => p.Patients)
                 .HasForeignKey(d => d.District)
-                .HasConstraintName("FK__Patients__Distri__49C3F6B7");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Patients__Distri__3D5E1FD2");
         });
 
         modelBuilder.Entity<Specialization>(entity =>
         {
-            entity.HasKey(e => e.Name).HasName("PK__Speciali__737584F7D7AD2E06");
+            entity.HasKey(e => e.Id).HasName("PK__Speciali__3214EC27287A1B2D");
 
-            entity.ToTable("Specialization");
-
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 

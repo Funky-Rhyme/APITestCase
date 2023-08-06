@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Abstractions;
-using Microsoft.IdentityModel.Tokens;
-using System.Net;
-using SystemsOfControlAPI.Entities.DTO;
 using SystemsOfControlAPI.Entities.Enums;
 using SystemsOfControlAPI.Entities.Models;
+using SystemsOfControlAPI.Entities.Services;
 
 namespace SystemsOfControlAPI.Controllers
 {
@@ -95,7 +92,7 @@ namespace SystemsOfControlAPI.Controllers
             {
                 await _context.Patients.AddAsync(patient);
                 await _context.SaveChangesAsync();
-                return CreatedAtRoute(nameof(AddPatient), new { patient.Id}, patient);
+                return CreatedAtRoute(nameof(AddPatient), new { patient.Id }, patient);
             }
             catch (Exception ex)
             {

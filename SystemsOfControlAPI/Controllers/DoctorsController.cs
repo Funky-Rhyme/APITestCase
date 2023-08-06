@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using SystemsOfControlAPI.Entities.Models;
 
 namespace SystemsOfControlAPI.Controllers
@@ -59,7 +58,7 @@ namespace SystemsOfControlAPI.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            catch (DbUpdateConcurrencyException) 
+            catch (DbUpdateConcurrencyException)
             {
                 if (!DoctorExists(id))
                 {
@@ -91,7 +90,7 @@ namespace SystemsOfControlAPI.Controllers
                 await _context.SaveChangesAsync();
                 return CreatedAtRoute(nameof(AddDoctor), new { doctor.Id }, doctor);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, "An error occured while adding the doctor");
             }
