@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using SystemsOfControlAPI.Controllers;
 
 namespace SystemsOfControlAPI.Entities.Models;
 
@@ -8,6 +9,8 @@ public partial class HospitalContext : DbContext
 {
     public HospitalContext()
     {
+        Database.EnsureDeleted();
+        Database.EnsureCreated();
     }
 
     public HospitalContext(DbContextOptions<HospitalContext> options)
@@ -38,12 +41,24 @@ public partial class HospitalContext : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
         });
 
+        modelBuilder.Entity<Cabinet>().HasData(
+            new Cabinet { Id = 1, Number = 1 },
+            new Cabinet { Id = 2, Number = 2 },
+            new Cabinet { Id = 3, Number = 3}
+            );
+
         modelBuilder.Entity<District>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__District__3214EC27AC5682AC");
 
             entity.Property(e => e.Id).HasColumnName("ID");
         });
+
+        modelBuilder.Entity<District>().HasData(
+                new District { Id = 1, Number = 0 },
+                new District { Id = 2, Number = 1 },
+                new District { Id = 3, Number = 2 }
+                );
 
         modelBuilder.Entity<Doctor>(entity =>
         {
@@ -92,6 +107,12 @@ public partial class HospitalContext : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(100);
         });
+
+        modelBuilder.Entity<Specialization>().HasData(
+            new Specialization { Id = 1, Name = "Ophthalmologist" },
+            new Specialization { Id = 2, Name = "Therapist" },
+            new Specialization { Id = 3, Name = "Surgeon" }
+            );
 
         OnModelCreatingPartial(modelBuilder);
     }

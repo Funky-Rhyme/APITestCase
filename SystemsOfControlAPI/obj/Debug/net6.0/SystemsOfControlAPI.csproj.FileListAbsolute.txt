@@ -85,3 +85,5 @@ D:\Programming\CSharp\SystemsOfControlAPI\SystemsOfControlAPI\obj\Debug\net6.0\r
 D:\Programming\CSharp\SystemsOfControlAPI\SystemsOfControlAPI\obj\Debug\net6.0\SystemsOfControlAPI.pdb
 D:\Programming\CSharp\SystemsOfControlAPI\SystemsOfControlAPI\obj\Debug\net6.0\SystemsOfControlAPI.genruntimeconfig.cache
 D:\Programming\CSharp\SystemsOfControlAPI\SystemsOfControlAPI\obj\Debug\net6.0\ref\SystemsOfControlAPI.dll
+D:\Programming\CSharp\SystemsOfControlAPI\SystemsOfControlAPI\bin\Debug\net6.0\SystemsOfControlAPI.xml
+D:\Programming\CSharp\SystemsOfControlAPI\SystemsOfControlAPI\obj\Debug\net6.0\SystemsOfControlAPI.xml

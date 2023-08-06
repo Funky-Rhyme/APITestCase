@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using SystemsOfControlAPI.Entities.DTO;
 using SystemsOfControlAPI.Entities.Enums;
 using SystemsOfControlAPI.Entities.Models;
 using SystemsOfControlAPI.Entities.Services;
@@ -18,7 +20,7 @@ namespace SystemsOfControlAPI.Controllers
         }
 
 
-        [HttpGet("GetPatients/{id}")]
+        [HttpGet("GetPatients/{id}", Name = "GetPatient")]
         public async Task<ActionResult<Patient>> GetPatient(int id)
         {
             var patient = await _context.Patients.FindAsync(id);
@@ -28,7 +30,18 @@ namespace SystemsOfControlAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(patient);
+            var patientDto = new PatientDTO()
+            {
+                Surname = patient.Surname,
+                Name = patient.Name,
+                MiddleName = patient.MiddleName,
+                Address = patient.Address,
+                DateOfBirth = patient.DateOfBirth,
+                Sex = patient.Sex,
+                District = patient.District,
+            };
+
+            return Ok(patientDto);
         }
 
         [HttpDelete("DeletePatient/{id}")]
@@ -75,24 +88,37 @@ namespace SystemsOfControlAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("AddPatient/")]
-        public async Task<IActionResult> AddPatient([FromBody] Patient patient)
+        [HttpPost]
+        public async Task<IActionResult> AddPatient([FromBody] PatientDTO patientDto)
         {
-            if (patient == null)
+            if (patientDto == null)
             {
                 return BadRequest("Invalid patient data");
             }
 
-            if (string.IsNullOrWhiteSpace(patient.Name) || string.IsNullOrWhiteSpace(patient.Surname))
+            if (string.IsNullOrWhiteSpace(patientDto.Name) || string.IsNullOrWhiteSpace(patientDto.Surname))
             {
                 return BadRequest("First name and surname are required");
             }
 
             try
             {
+                var patient = new Patient 
+                { 
+                    Surname = patientDto.Surname,
+                    Name = patientDto.Name,
+                    MiddleName = patientDto.MiddleName,
+                    Address = patientDto.Address,
+                    DateOfBirth = patientDto.DateOfBirth,
+                    Sex = patientDto.Sex,
+                    District = patientDto.District,
+                };
+
+                patient.DistrictNavigation = await _context.Districts.FindAsync(patientDto.District);
+                
                 await _context.Patients.AddAsync(patient);
                 await _context.SaveChangesAsync();
-                return CreatedAtRoute(nameof(AddPatient), new { patient.Id }, patient);
+                return CreatedAtRoute("GetPatient", new { id = patient.Id }, patientDto);
             }
             catch (Exception ex)
             {
@@ -100,11 +126,14 @@ namespace SystemsOfControlAPI.Controllers
             }
         }
 
-        [HttpGet]
+
+        /// <param name="sortParams">0 - Sort by ID, 1 - Sort by name, 2 - Sort by Surname</param>
+        /// <param name="sortingDirection">0 - Sort Ascending, 1 - Descending</param>
+        [HttpGet("GetPatientsList/")]
         public async Task<ActionResult> GetPatientsList(
             [FromQuery] PaginationParams @params,
-            [FromQuery] PatientsSortEnum @sortParams,
-            [FromQuery] SortDirectioneEnum @sortingDirection)
+            [FromQuery] PatientsSortEnum sortParams,
+            [FromQuery] SortDirectioneEnum sortingDirection)
         {
             var patients = _context.Patients.AsQueryable();
 
@@ -112,7 +141,7 @@ namespace SystemsOfControlAPI.Controllers
             {
                 case PatientsSortEnum.Id:
                     {
-                        patients = (@sortingDirection == SortDirectioneEnum.Ascending)
+                        patients = (sortingDirection == SortDirectioneEnum.Ascending)
                             ? patients.OrderBy(p => p.Id)
                             : patients.OrderByDescending(p => p.Id);
                         break;
